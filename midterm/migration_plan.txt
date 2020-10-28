@@ -1,0 +1,9 @@
+The order of migration (insertion of data) goes as follows:
+1. Route
+2. Stop
+3. RouteStop
+4. Schedule
+5. Bus
+6. Driver
+
+-- Mark Ruzinov 4187

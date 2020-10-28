@@ -1,0 +1,56 @@
+-- Mark Ruzinov 4187 -- FUNCTION
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE FUNCTION dbo.fnDaysinMonth
+(
+	@MyDate DATETIME
+)
+RETURNS INT
+AS
+BEGIN
+
+	RETURN day(eomonth(@MyDate))
+
+END
+GO
+
+-- Mark Ruzinov 4187 -- PROCEDURE
+GO
+CREATE PROCEDURE proc1
+@VehicleID as numeric(2,0)
+AS
+SELECT vehicle, a.RouteId, StopId, departure FROM Schedule a
+INNER JOIN Bus b on a.id = b.ScheduleId
+INNER JOIN RouteStop c on a.RouteId = c.RouteId
+WHERE vehicle = @VehicleID
+GROUP BY a.RouteId, vehicle, StopId, departure;
+GO
+
+-- Mark Ruzinov 4187 -- TRIGGER
+CREATE TRIGGER [dbo].[trig1]
+   ON  [dbo].[Bus]
+   AFTER INSERT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+DECLARE @BusID int
+	DECLARE @Schedule int
+	SELECT	@BusID = i.vehicle,
+			@Schedule = i.ScheduleId
+	FROM inserted i;
+
+	INSERT INTO [dbo].[driverStat] (DESC_STAT, DATE_STAT)
+	VALUES ('A new vehicle is inserted with ID = ' + CAST(@BusID AS varchar(18)) + ', which will go on the route = ' + CAST(@Schedule AS varchar(18)), GETDATE());
+END
+
+-- Mark Ruzinov 4187 -- VIEW
+-- arbitrary route ID chosen since the exact number wasn't specified.
+CREATE VIEW RouteInfoView AS
+SELECT a.id AS RouteStop, RouteId, StopId, Name AS StopName, Terminus
+FROM dbo.RouteStop a
+INNER JOIN dbo.Stop b on a.StopId = b.id
+WHERE (RouteId = 3);

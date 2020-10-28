@@ -1,0 +1,18 @@
+-- Mark Ruzinov 4187
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE FUNCTION dbo.fnDaysinMonth
+(
+	@MyDate DATETIME
+)
+RETURNS INT
+AS
+BEGIN
+
+	RETURN day(eomonth(@MyDate))
+
+END
+GO
